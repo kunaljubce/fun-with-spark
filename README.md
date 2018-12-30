@@ -4,4 +4,4 @@ This is a placeholder for all my Hadoop projects including PySpark, Hive, Kafka 
 Project 1 - To identify:
 		a) All transactions for each account that have the same transaction_source and same transaction_amount in both months
 		b) All accounts that have transactions in either month but not both.
-The datasets are for the months August and September and have 2000 records each. The code is written in Python and Spark.
+The datasets are for the months August and September and have 2000 records each. The code is written in PySpark. The logic is implemented using RDDs, without resorting to the use of DataFrames.
