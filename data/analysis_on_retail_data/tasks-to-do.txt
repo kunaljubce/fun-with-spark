@@ -2,3 +2,5 @@
 - find all unique customer details for suspected fraud transactions (orders.paymentStatus = SUSPECTED_FRAUD)
 - find total amount and total number of orders for each of value of paymentStatus
 - find number of products that are from the brands - Nike, Adidas, Reebok, Puma, Majestic, Under Armour and Fitbit
+- find the number of products that below to different price ranges i.e. $0-$20, $20-$40 etc. Use dataframes for this.
+- 
