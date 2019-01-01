@@ -1,0 +1,41 @@
+Schema of customers:
+1. customerId
+2. firstName
+3. surname
+4. lastFourDigitsOfCreditCard - (blocked out for security reasons)
+5. uniqueId/SSN - unique identification number/social security number of the customer (blocked out for security reasons)
+6. addressRoad - road of customer's address
+7. addressCity - city of customer's address
+8. addressState - state of customer's address
+9. addressPin - pin code of customer's address
+
+Schema of categories:
+1. productCategoryId 
+2. productGroupId
+3. productCategoryName
+
+Schema of orders:
+1. orderId
+2. dateOfTransaction
+3. customerId - foreign key to customers.customerId
+4. paymentStatus
+
+Schema of order_items:
+1. OrderItemId - unique for each order item
+2. OrderItemOrderId - foreign key to orders.orderId. For each order, there can be multiple order items
+3. productId
+4. quantity
+5. totalprice - product of pricePerUnit and quantity
+6. pricePerUnit
+
+Schema of departments:
+1. departmentId
+2. departmentName
+
+Schema of products:
+1. productId
+2. productGroupId
+3. productDescription
+4. additionalDescriptionIfAny
+5. pricePerUnit
+6. productURL

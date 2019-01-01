@@ -1,0 +1,4 @@
+- find the state-wise distribution of customers i.e. number of customers from each state
+- find all unique customer details for suspected fraud transactions (orders.paymentStatus = SUSPECTED_FRAUD)
+- find total amount and total number of orders for each of value of paymentStatus
+- find number of products that are from the brands - Nike, Adidas, Reebok, Puma, Majestic, Under Armour and Fitbit
