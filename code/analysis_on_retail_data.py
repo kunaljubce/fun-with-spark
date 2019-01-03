@@ -23,5 +23,18 @@ if __name__ == "__main__":
 	customersPairRDD = customersRDD.map(lambda k: (k[0], (k[1], k[2], k[4], k[5], k[6])))
 	customerSuspectedFraud = ordersSuspectedFraudPairRDDGrouped.join(customersPairRDD)
 	customerSuspectedFraud.coalesce(1).saveAsTextFile("/home/hduser/Downloads/analysis_on_retail_data/suspectedFrauds")
+
+	#3 to find total amount and total number of orders for each of value of paymentStatus
+	orderStatusRDD = orders.map(lambda k: (k.split(",")[3], 1))
+	orderStatusCount = orderStatusRDD.reduceByKey(lambda x,y: (x+y))
+	orderStatusCount.coalesce(1).saveAsTextFile("/home/hduser/Downloads/analysis_on_retail_data/orderAmount")
+	orderItems = sc.textFile("/home/hduser/Downloads/analysis_on_retail_data/order_items")
+	ordersPairRDD = orders.map(lambda k: (k.split(",")[0], k.split(",")[3]))
+	orderItemsPairRDD = orderItems.map(lambda k: (k.split(",")[1], k.split(",")[4]))
+	
+
+	customersRDD.unpersist()
+
+	
 	
 	
