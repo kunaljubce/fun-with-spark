@@ -31,6 +31,16 @@ if __name__ == "__main__":
 	orderItems = sc.textFile("/home/hduser/Downloads/analysis_on_retail_data/order_items")
 	ordersPairRDD = orders.map(lambda k: (k.split(",")[0], k.split(",")[3]))
 	orderItemsPairRDD = orderItems.map(lambda k: (k.split(",")[1], k.split(",")[4]))
+	joinedRDD = orderItemsPairRDD.join(ordersPairRDD)
+	joinedRDDGrouped = joinedRDD.groupByKey().map(lambda k: (k[0], list(k[1])))
+	orderPriceAndStatus = [i[1] for i in joinedRDDGrouped.collect()]
+	orderPriceAndStatusRDD = sc.parallelize(orderPriceAndStatus)
+	orderStatusAndPriceRDD = orderPriceAndStatusRDD.flatMap(lambda xs: [(x[1], x[0]) for x in xs])
+	# orderStatusAndPriceRDD.top(2)
+	orderStatusAndPrice = orderStatusAndPriceRDD.reduceByKey(lambda x,y: (float(x)+float(y)))
+	orderStatusAndPrice.coalesce(1).saveAsTextFile("/home/hduser/Downloads/analysis_on_retail_data/paymentStatus")
+
+
 	
 
 	customersRDD.unpersist()
