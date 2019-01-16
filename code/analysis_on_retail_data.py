@@ -40,8 +40,13 @@ if __name__ == "__main__":
 	orderStatusAndPrice = orderStatusAndPriceRDD.reduceByKey(lambda x,y: (float(x)+float(y)))
 	orderStatusAndPrice.coalesce(1).saveAsTextFile("/home/hduser/Downloads/analysis_on_retail_data/paymentStatus")
 
-
-	
+	#4 to find number of products that are from the brands - Nike, Adidas, Reebok, and Puma
+	products = sc.textFile("/home/hduser/Downloads/analysis_on_retail_data/products")
+	productsRDD = products.map(lambda x: (x.split(",")[2], 1))	
+	productsRDDBranded = products.map(lambda x: ("Nike", 1) if "nike" in x.split(",")[2].lower() else (("Adidas", 1) if "adidas" in x.split(",")[2].lower() else (("Reebok", 1) if "reebok" in x.split(",")[2].lower() else (("Puma", 1) if "puma" in x.split(",")[2].lower() else (("Fitbit", 1) if "fitbit" in x.split(",")[2].lower() else ("",""))))))
+	productsCount = productsRDDBranded.reduceByKey(lambda x,y: (x + y))
+	productsCountFiltered = productsCount.filter(lambda x: x[0] != "")
+	productsCountFiltered.coalesce(1).saveAsTextFile("/home/hduser/Downloads/analysis_on_retail_data/brandedProducts")
 
 	customersRDD.unpersist()
 
