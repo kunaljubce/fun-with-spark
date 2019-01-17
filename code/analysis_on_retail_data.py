@@ -29,6 +29,7 @@ if __name__ == "__main__":
 	orderStatusCount = orderStatusRDD.reduceByKey(lambda x,y: (x+y))
 	orderStatusCount.coalesce(1).saveAsTextFile("/home/hduser/Downloads/analysis_on_retail_data/orderAmount")
 	orderItems = sc.textFile("/home/hduser/Downloads/analysis_on_retail_data/order_items")
+	orderItems.persist(StorageLevel.MEMORY_ONLY)
 	ordersPairRDD = orders.map(lambda k: (k.split(",")[0], k.split(",")[3]))
 	orderItemsPairRDD = orderItems.map(lambda k: (k.split(",")[1], k.split(",")[4]))
 	joinedRDD = orderItemsPairRDD.join(ordersPairRDD)
@@ -48,6 +49,19 @@ if __name__ == "__main__":
 	productsCountFiltered = productsCount.filter(lambda x: x[0] != "")
 	productsCountFiltered.coalesce(1).saveAsTextFile("/home/hduser/Downloads/analysis_on_retail_data/brandedProducts")
 
+	#5 to find the productId, productDescription and price of the top 10 highest and lowest selling items
+	orderItemsProdQty = orderItems.map(lambda k: (k.split(",")[2], k.split(",")[3]))
+	orderItemsProdQtyGrouped = orderItemsProdQty.reduceByKey(lambda x,y: (int(x)+int(y)))
+	orderItemsProdQtySorted = orderItemsProdQtyGrouped.sortBy(lambda x: x[1]).collect() 			# returns a list
+	orderItemsLeastSelling = orderItemsProdQtySorted[0:9]
+	orderItemsHighestSelling = orderItemsProdQtySorted[(len(orderItemsProdQtySorted)-9):(len(orderItemsProdQtySorted))]
+	orderItemsBestAndWorst = orderItemsLeastSelling + orderItemsHighestSelling				# appending 2 lists
+	orderItemsBestAndWorstRDD = sc.parallelize(orderItemsBestAndWorst)				# converting list to pair RDD
+	productsIdAndDesc = products.map(lambda k: (k.split(",")[0], k.split(",")[2]))
+	joinedRes = orderItemsBestAndWorstRDD.join(productsIdAndDesc)
+	joinedRes.coalesce(1).saveAsTextFile("/home/hduser/Downloads/analysis_on_retail_data/bestAndWorstSellingProducts")
+
+	orderItems.unpersist()	
 	customersRDD.unpersist()
 
 	
